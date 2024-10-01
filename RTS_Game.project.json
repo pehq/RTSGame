@@ -6,12 +6,16 @@
       "$path": "src/Shared"
     },
     "ServerScriptService": {
-      "$path": "src/Server"
+      "$path": "src/Server",
+      "Nevermore": {
+        "$path": "node_modules"
+      }
     },
     "StarterPlayer": {
       "StarterPlayerScripts": {
         "$path": "src/Client"
       }
     }
-  }
+  },
+  "ignoreGlobs": ["**\\.package-lock.json"]
 }
