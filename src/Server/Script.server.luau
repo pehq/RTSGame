@@ -12,3 +12,5 @@ serviceBag:Start()
 
 local x = require("Binder")
 local y = x.new()
+
+y
