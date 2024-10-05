@@ -114,4 +114,25 @@ function Unit:AttackTarget(otherUnit)
 	--TODO: Enter attack state
 end
 
+function Unit:Emote(EmoteNum:number)
+	local Emotes = self.Animations.Emote
+	if EmoteNum == nil or #Emotes < EmoteNum then
+		EmoteNum = Emotes[math.random(1, #Emotes)]
+	end
+	--Play emote
+	self.State = "Emote"
+	
+	local EmoteTrack:AnimationTrack = self:LoadAnimation(Emotes[EmoteNum])
+	EmoteTrack:Play()
+	
+	repeat
+		task.wait()
+	until
+	self.State ~= "Emote"
+	
+	--Stop emote
+	EmoteTrack:Stop()
+	EmoteTrack:Destroy()
+end
+
 return Unit

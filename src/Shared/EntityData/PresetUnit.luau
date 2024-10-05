@@ -1,3 +1,4 @@
+--DO NOT PUT ANY CONNECTIONS HERE, ONLY USE FOR DATA!!!
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local PresetUnit = {}
@@ -16,7 +17,7 @@ PresetUnit.Values = {
 	["EntityType"] = "Unit", --Building or unit?
 	["Name"] = "PresetUnit",
 	["Object"] = ReplicatedStorage.Models:FindFirstChild(""), --TODO: addsomehting here
-	["Animations"] = {
+	["Animations"] = { --TODO: Note, if skins are enabled then animations will be overrided by skin.
 		["Walk"] = "rbxassetid://00000000", --Walking animation
 		["Idle"] = "rbxassetid://00000000", --Idle animation
 		["Attack"] = "rbxassetid://00000000", --Attack animation
@@ -28,8 +29,5 @@ PresetUnit.Values = {
 	},
 	["BuildTime"] = 5,
 }
-
-
-
 
 return PresetUnit

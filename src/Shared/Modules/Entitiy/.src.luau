@@ -10,7 +10,7 @@ for i, v in pairs(EntityData:GetChildren()) do
 	
 	if v:IsA("ModuleScript") then
 		Required = require(v)
-		Entity.EntitiesDirectory[v.Values.Name] = Required
+		Entity.EntitiesDirectory[Required.Values.Name] = Required
 	end
 	
 	Required = nil
@@ -25,7 +25,7 @@ function Entity.new(Values:{})
 	self.EntityId = EntityIdCount
 	EntityIdCount += 1
 	
-	self.Owner = Values.Owner
+	self.Owner = Values.Owner or nil
 	self.Team = Values.Owner.Team or nil
 	self.Object = Values.Object:Clone()
 	

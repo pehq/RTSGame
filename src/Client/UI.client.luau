@@ -4,6 +4,6 @@ local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local EntityData = {}
-for i, v in pairs(ReplicatedStorage.EntityData) do
+for i, v in pairs(ReplicatedStorage.EntityData:GetChildren()) do
 	
 end
