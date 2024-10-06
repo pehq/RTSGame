@@ -18,15 +18,16 @@ end
 
 local EntityIdCount = 1
 
-function Entity.new(Values:{})
+function Entity.new(Values:{}, owner)
 	local self = {}
 	setmetatable(self, Entity)
 		
 	self.EntityId = EntityIdCount
 	EntityIdCount += 1
 	
-	self.Owner = Values.Owner or nil
-	self.Team = Values.Owner.Team or nil
+	self.Owner = owner
+	print(self.Owner)
+	self.Team = self.Owner.Team or nil
 	self.Object = Values.Object:Clone()
 	
 	--TODO: This is very memory costly. If used en masse, then server might crash.

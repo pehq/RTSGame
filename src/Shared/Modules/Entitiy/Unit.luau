@@ -6,8 +6,8 @@ local EntityModule = require(script.Parent)
 local Unit = {}
 Unit.__index = Unit
 
-function Unit.new(Values)
-	local self = EntityModule.new(Values)
+function Unit.new(Values, owner)
+	local self = EntityModule.new(Values, owner)
 	setmetatable(self, Unit)
 	
 	local Humanoid:Humanoid = self.Object:FindFirstChildWhichIsA("Humanoid")

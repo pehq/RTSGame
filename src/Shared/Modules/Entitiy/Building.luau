@@ -9,15 +9,15 @@ local UnitModule = require(script.Parent.Unit)
 local Building = {}
 Building.__index = Building
 
-function Building.new(values)
-	local self = EntityModule.new(values)
+function Building.new(values, owner)
+	local self = EntityModule.new(values, owner)
 	setmetatable(self, Building)
 	
 	self.BuildingState = "Idle"
 	self.ActionState = "Idle"
 	self.Queue = {}
 	self.BuildProgress = 0
-	self.UnitWaypoint =  self.Object.PrimaryPart.Position - self.Object.PrimaryPart.Size.Z
+	self.UnitWaypoint =  self.Object.PrimaryPart.Position - Vector3.new(0,0, -self.Object.PrimaryPart.Size.Z)
 	
 	return self
 end
