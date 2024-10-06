@@ -1,5 +1,6 @@
 --PehqDev
 --Loads the starting positions
+local Players = game:GetService("Players")
 local ServerStorage = game:GetService("ServerStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local PresetsContainer = ServerStorage.Presets
@@ -36,10 +37,28 @@ function Presets.FormatCFrameValues(PresetInstances:Instance):{[string]:{[string
 			if Result[v.Name] == nil then
 				Result[v.Name] = {}
 			end
+		elseif v.Name == "Priority" then
+			continue
 		end
 	end
 	
 	return Result
+end
+
+function Presets.AssignPlayersToTeams(preset:Instance)
+	local AssignedTeams = {}
+	
+	local PlayerList = Players:GetChildren()
+	local TeamList = preset:GetChildren()
+	
+	for i = 1, #PlayerList do
+		local RandomPlayer = math.random(1, #PlayerList)
+		AssignedTeams[TeamList[1].Name] = PlayerList[RandomPlayer]
+		table.remove(PlayerList, RandomPlayer)
+		table.remove(TeamList, 1) --Questionable..?
+	end
+	
+	return AssignedTeams
 end
 
 function Presets.Setup(Preset:{[string]:{[string]:CFrame}}, PlayerTeams:{string:Player})
@@ -65,14 +84,17 @@ function Presets.Setup(Preset:{[string]:{[string]:CFrame}}, PlayerTeams:{string:
 				error("EntityData for "..j.." doesn't exist")
 			end
 			local NewEntity
-			if Entity.Type == "Unit" then
-				NewEntity = UnitModule.new(EntityData[j].Values)
-			elseif Entity.Type == "Building" then
-				NewEntity = BuildingModule.new(EntityData[j].Values)
+			if Entity.Values.EntityType == "Unit" then
+				NewEntity = UnitModule.new(Entity.Values, PlayerTeams[i])
+			elseif Entity.Values.EntityType == "Building" then
+				NewEntity = BuildingModule.new(Entity.Values, PlayerTeams[i])
+				print(NewEntity)
 			end
 			table.insert(EntityCreated, NewEntity)
 			
-			NewEntity.Owner = PlayerTeams[i]
+			print(EntityData)
+			print(NewEntity)
+			NewEntity.Object.PrimaryPart.CFrame = y
 			NewEntity.Object.Parent = workspace[tostring(NewEntity.Owner.UserId)]
 		end
 	end
