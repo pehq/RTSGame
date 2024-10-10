@@ -16,7 +16,7 @@ PresetUnit.Values = {
 	},
 	["EntityType"] = "Unit", --Building or unit?
 	["Name"] = "PresetUnit",
-	["Object"] = ReplicatedStorage.Models:FindFirstChild(""), --TODO: addsomehting here
+	["Object"] = ReplicatedStorage.Models:FindFirstChild("PresetUnit"), --TODO: addsomehting here
 	["Animations"] = { --TODO: Note, if skins are enabled then animations will be overrided by skin.
 		["Walk"] = "rbxassetid://00000000", --Walking animation
 		["Idle"] = "rbxassetid://00000000", --Idle animation
@@ -28,6 +28,7 @@ PresetUnit.Values = {
 		},
 	},
 	["BuildTime"] = 5,
+	["Speed"] = 16,
 }
 
 return PresetUnit

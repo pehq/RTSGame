@@ -88,12 +88,9 @@ function Presets.Setup(Preset:{[string]:{[string]:CFrame}}, PlayerTeams:{string:
 				NewEntity = UnitModule.new(Entity.Values, PlayerTeams[i])
 			elseif Entity.Values.EntityType == "Building" then
 				NewEntity = BuildingModule.new(Entity.Values, PlayerTeams[i])
-				print(NewEntity)
 			end
 			table.insert(EntityCreated, NewEntity)
 			
-			print(EntityData)
-			print(NewEntity)
 			NewEntity.Object.PrimaryPart.CFrame = y
 			NewEntity.Object.Parent = workspace[tostring(NewEntity.Owner.UserId)]
 		end

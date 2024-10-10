@@ -18,6 +18,16 @@ end
 
 local EntityIdCount = 1
 
+function Entity.ApplyCollisionsOnObj(Object:Model)
+	for i, v in pairs(Object:GetDescendants()) do
+		if v:IsA("BasePart") then
+			v.CollisionGroup = "Entity"
+		end
+	end
+	
+	return Object
+end
+
 function Entity.new(Values:{}, owner)
 	local self = {}
 	setmetatable(self, Entity)
@@ -26,9 +36,9 @@ function Entity.new(Values:{}, owner)
 	EntityIdCount += 1
 	
 	self.Owner = owner
-	print(self.Owner)
-	self.Team = self.Owner.Team or nil
+	self.Team = self.Owner ~= nil and self.Owner.Team or nil
 	self.Object = Values.Object:Clone()
+	Entity.ApplyCollisionsOnObj(self.Object)
 	
 	--TODO: This is very memory costly. If used en masse, then server might crash.
 	for i, v in pairs(Values) do
