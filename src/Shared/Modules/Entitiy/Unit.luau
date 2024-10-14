@@ -38,9 +38,11 @@ function Unit:WalkTo(pos:Vector3)
 	local Humanoid = Model:FindFirstChildWhichIsA("Humanoid")
 	local Animations = self.Animations
 	
-	local WalkTrack:AnimationTrack = self:LoadAnimation(Animations.Walk, "Walk") --TODO: tie movement with walk speed
-	WalkTrack:Play()
-	WalkTrack:AdjustSpeed(self.WalkSpeed) --TODO: this might be done in another function that speeds up animations
+	--local WalkTrack:AnimationTrack = self:LoadAnimation(Animations.Walk, "Walk") --TODO: tie movement with walk speed
+	--WalkTrack:Play()
+	--WalkTrack:AdjustSpeed(self.WalkSpeed) --TODO: this might be done in another function that speeds up animations
+	
+	Humanoid:MoveTo(pos)
 	
 	local TimeSinceLastMove = 0
 	local Heartbeat
@@ -53,14 +55,13 @@ function Unit:WalkTo(pos:Vector3)
 	
 	local MoveConnection
 	MoveConnection = Humanoid.MoveToFinished:Once(function()
-		WalkTrack:Stop()
 		Heartbeat:Disconnect()
 	end)
 	
 	local PosChange
 	PosChange = Humanoid:GetPropertyChangedSignal("WalkToPoint"):Connect(function()
 		if Humanoid.WalkToPoint ~= pos then
-			WalkTrack:Stop()
+			--WalkTrack:Stop()
 			MoveConnection:Disconnect()
 			Heartbeat:Disconnect()
 			PosChange:Disconnect()
@@ -134,5 +135,7 @@ function Unit:Emote(EmoteNum:number)
 	EmoteTrack:Stop()
 	EmoteTrack:Destroy()
 end
+
+--Someunits have turrets so they'll be procedural
 
 return Unit
