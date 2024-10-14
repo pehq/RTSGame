@@ -57,6 +57,24 @@ local function GetEntityFromInstance(obj:Instance)
 	return Entity
 end
 
+local function GetEntityFromId(id:number)
+	local Entity = nil
+	for i, v in pairs(EntityList) do
+		if v.EntityId == id then
+			Entity = v
+			break
+		end
+	end
+	
+	return Entity
+end
+
 --At this point, there should be entities.
+--Remote Events
+RemoteEvents.MoveEntity.OnServerEvent:Connect(function(plr, TarPos, EntityId)
+	local Entity = GetEntityFromId(EntityId)
+	Entity:WalkTo(TarPos)
+end)
+
 --Remote functions
 RemoteFunctions.GetEntityFromInstance.OnServerInvoke = function(plr, obj) return GetEntityFromInstance(obj) end
