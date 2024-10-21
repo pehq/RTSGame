@@ -5,12 +5,14 @@ local ContextActionService = game:GetService("ContextActionService")
 
 local Player = Players.LocalPlayer
 local Mouse = Player:GetMouse()
-local RemoteEvents = ReplicatedStorage.Events
-local RemoteFunctions = ReplicatedStorage.Functions
+local Events = ReplicatedStorage.Events
+local Functions = ReplicatedStorage.Functions
 
 local Selected = nil
 local SelectionBox = Instance.new("SelectionBox")
 Mouse.Button1Down:Connect(function()
+	Events.EntityDeselected:Fire(Selected)
+	
 	Selected = nil
 	SelectionBox.Visible = false
 	SelectionBox.Adornee = nil
@@ -22,12 +24,14 @@ Mouse.Button1Up:Connect(function()
 		return
 	end
 	
-	local Entity = RemoteFunctions.GetEntityFromInstance:InvokeServer(ObjPointed.Parent)
+	local Entity = Functions.GetEntityFromInstance:InvokeServer(ObjPointed.Parent)
 	Selected = Entity
 	
 	if Entity == nil then
 		return
 	end
+	
+	Events.EntityInfo:Fire(Entity)
 	
 	SelectionBox.Visible = true
 	SelectionBox.Adornee = ObjPointed.Parent
@@ -39,5 +43,5 @@ Mouse.Button2Up:Connect(function()
 	if Selected == nil or Selected.EntityId == nil then
 		return
 	end
-	RemoteEvents.MoveEntity:FireServer(TargetPos, Selected.EntityId)
+	Events.MoveEntity:FireServer(TargetPos, Selected.EntityId)
 end)

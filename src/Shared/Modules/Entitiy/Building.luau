@@ -1,7 +1,9 @@
+local ServerStorage = game:GetService("ServerStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Events = ReplicatedStorage.Events
+local ServerEvents = ServerStorage.Events
 
 local EntityModule = require(script.Parent)
 local UnitModule = require(script.Parent.Unit)
@@ -33,7 +35,7 @@ function Building:SpawnUnit(UnitName)
 		0.5 * (2 - Rot2d.X^2 + Rot2d.Y^2 + 2 * Rot2d.Y * 2^0.5)^0.5 - 0.5 * (2 - Rot2d.X^2 + Rot2d.Y^2 - 2 * Rot2d.Y * 2^0.5)^0.5)
 	local SpawningEdge = Hitbox.Position + Vector3.new(SpawningEdgeOffset.X * Hitbox.Size.X/2, Hitbox.Position.Y, SpawningEdgeOffset.Y * Hitbox.Size.Z)
 	
-	Events.SpawnUnit:Fire(self.EntityId, UnitName, SpawningEdge)
+	ServerEvents.SpawnUnit:Fire(self.EntityId, UnitName, SpawningEdge)
 	return self
 end
 

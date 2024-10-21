@@ -18,7 +18,7 @@ PresetUnit.Values = {
 	["Name"] = "PresetUnit",
 	["Object"] = ReplicatedStorage.Models:FindFirstChild("PresetUnit"), --TODO: addsomehting here
 	["Animations"] = { --TODO: Note, if skins are enabled then animations will be overrided by skin.
-		["Walk"] = "rbxassetid://00000000", --Walking animation
+		--["Walk"] = "rbxassetid://00000000", --Walking animation
 		["Idle"] = "rbxassetid://00000000", --Idle animation
 		["Attack"] = "rbxassetid://00000000", --Attack animation
 		["Emote"] = { --Picks a random emote
@@ -29,6 +29,8 @@ PresetUnit.Values = {
 	},
 	["BuildTime"] = 5,
 	["Speed"] = 16,
+	["MaxHealth"] = 100,
+	["MaxShield"] = 500,
 }
 
 return PresetUnit

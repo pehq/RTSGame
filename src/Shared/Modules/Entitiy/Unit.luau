@@ -38,9 +38,12 @@ function Unit:WalkTo(pos:Vector3)
 	local Humanoid = Model:FindFirstChildWhichIsA("Humanoid")
 	local Animations = self.Animations
 	
-	--local WalkTrack:AnimationTrack = self:LoadAnimation(Animations.Walk, "Walk") --TODO: tie movement with walk speed
-	--WalkTrack:Play()
-	--WalkTrack:AdjustSpeed(self.WalkSpeed) --TODO: this might be done in another function that speeds up animations
+	local WalkTrack = nil
+	if Animations.Walk ~= nil then
+		WalkTrack = self:LoadAnimation(Animations.Walk, "Walk") --TODO: tie movement with walk speed
+		WalkTrack:Play()
+		WalkTrack:AdjustSpeed(self.WalkSpeed) --TODO: this might be done in another function that speeds up animations
+	end
 	
 	Humanoid:MoveTo(pos)
 	
@@ -61,7 +64,9 @@ function Unit:WalkTo(pos:Vector3)
 	local PosChange
 	PosChange = Humanoid:GetPropertyChangedSignal("WalkToPoint"):Connect(function()
 		if Humanoid.WalkToPoint ~= pos then
-			--WalkTrack:Stop()
+			if WalkTrack ~= nil then
+				WalkTrack:Stop()
+			end
 			MoveConnection:Disconnect()
 			Heartbeat:Disconnect()
 			PosChange:Disconnect()
