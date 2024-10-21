@@ -58,11 +58,6 @@ function VectorUtil.AngleBetweenSigned(vector1, vector2, axisVector)
 	return angle * math.sign(axisVector:Dot(vector1:Cross(vector2)))
 end
 
-function VectorUtil.AngleBetweenSigned(vector1, vector2, axisVector)
-	local angle = VectorUtil.AngleBetween(vector1, vector2)
-	return angle * math.sign(axisVector:Dot(vector1:Cross(vector2)))
-end
-
 function VectorUtil.SquaredMagnitude(vector)
 	return vector.X^2+vector.Y^2+vector.Z^2
 end
