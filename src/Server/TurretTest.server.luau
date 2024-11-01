@@ -1,3 +1,4 @@
+--disable
 --[[
     Testing with dummy with only one motor but both elevation and yaw constraints
 ]]

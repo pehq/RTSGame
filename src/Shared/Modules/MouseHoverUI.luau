@@ -1,7 +1,5 @@
 local Hover = {}
 
-
-
 function Hover.ChangeTitle(plr:Player, title:string)
 	plr.PlayerGui:FindFirstChild("Hover"):FindFirstChildWhichIsA("CanvasGroup"):FindFirstChild("Title").Text = title
 end

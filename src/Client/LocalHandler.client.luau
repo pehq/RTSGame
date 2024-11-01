@@ -1,3 +1,4 @@
+--TODO: script needs to be rehauled, consider using ContextActionService. -Pehq
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
@@ -32,6 +33,17 @@ Mouse.Button1Up:Connect(function()
 	end
 	
 	Events.EntityInfo:Fire(Entity)
+	
+	--Testing
+	if Entity.EntityType == "Building" then
+		print(Entity)
+		local x = Instance.new("Part")
+		x.Position = Entity.UnitWaypoint
+		x.Size = Vector3.one
+		x.Anchored = true
+		x.Parent = workspace
+	end
+	--
 	
 	SelectionBox.Visible = true
 	SelectionBox.Adornee = ObjPointed.Parent

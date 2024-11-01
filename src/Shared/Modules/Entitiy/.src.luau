@@ -53,6 +53,4 @@ function Entity.new(Values:{}, owner)
 	return self
 end
 
-
-
 return Entity

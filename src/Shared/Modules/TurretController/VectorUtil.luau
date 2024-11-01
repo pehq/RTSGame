@@ -52,7 +52,6 @@ function VectorUtil.AngleBetween(vector1, vector2)
 	return math.acos(math.clamp(vector1.Unit:Dot(vector2.Unit), -1, 1))
 end
 
-
 function VectorUtil.AngleBetweenSigned(vector1, vector2, axisVector)
 	local angle = VectorUtil.AngleBetween(vector1, vector2)
 	return angle * math.sign(axisVector:Dot(vector1:Cross(vector2)))

@@ -19,28 +19,31 @@ function Building.new(values, owner)
 	self.ActionState = "Idle"
 	self.Queue = {}
 	self.BuildProgress = 0
-	self.UnitWaypoint =  self.Object.PrimaryPart.Position - Vector3.new(0,0, -self.Object.PrimaryPart.Size.Z)
+	self.UnitWaypoint = self.Object.PrimaryPart.Position + Vector3.new(0,0, -math.clamp(self.Object.PrimaryPart.Size.Z, 0, 5))
 	
 	return self
 end
 
-function Building:SpawnUnit(UnitName)
+function Building:SpawnUnit(UnitDataName)
 	--Spawn on edge of hitbox
 	local Model:Model = self.Object
 	local Hitbox = Model.PrimaryPart
 	local Rot = (self.UnitWaypoint - Hitbox.Position)
 	local Rot2d = Vector2.new(Rot.X, Rot.Z).Unit
 	--Convert unit circle to square
-	local SpawningEdgeOffset = Vector2.new(0.5 * (2 + Rot2d.X^2 - Rot2d.Y^2 + 2 * Rot2d.X * 2^0.5)^0.5 - 0.5 * (2 + Rot2d.X^2 - Rot2d.Y^2 - 2* Rot2d.X * 2^0.5)^0.5,
-		0.5 * (2 - Rot2d.X^2 + Rot2d.Y^2 + 2 * Rot2d.Y * 2^0.5)^0.5 - 0.5 * (2 - Rot2d.X^2 + Rot2d.Y^2 - 2 * Rot2d.Y * 2^0.5)^0.5)
+	local SpawningEdgeOffset = Vector2.new(0.5 * (2 + Rot2d.X^2 - Rot2d.Y^2 + 2 * Rot2d.X * 2^0.5)^0.5 - 0.5 * (2 + Rot2d.X^2 - Rot2d.Y^2 - 2* Rot2d.X * 2^0.5)^0.5, 0.5 * (2 - Rot2d.X^2 + Rot2d.Y^2 + 2 * Rot2d.Y * 2^0.5)^0.5 - 0.5 * (2 - Rot2d.X^2 + Rot2d.Y^2 - 2 * Rot2d.Y * 2^0.5)^0.5)
 	local SpawningEdge = Hitbox.Position + Vector3.new(SpawningEdgeOffset.X * Hitbox.Size.X/2, Hitbox.Position.Y, SpawningEdgeOffset.Y * Hitbox.Size.Z)
 	
-	ServerEvents.SpawnUnit:Fire(self.EntityId, UnitName, SpawningEdge)
+	--Orientation
+	local SpawnCFrame = CFrame.lookAt(SpawningEdge, Vector3.new(self.UnitWaypoint.X, SpawningEdge.Y, self.UnitWaypoint.Z))
+	
+	ServerEvents.SpawnUnit:Fire(self.EntityId, self.Owner, UnitDataName, SpawnCFrame, self.UnitWaypoint)
+	
 	return self
 end
 
 local Cancelled = false
-function Building:BuildFromQueue()
+function Building:BuildFromQueue() --I am considering turning this into a local functions :/
 	--Builds the first thing on the queue'
 	if #self.Queue == 0 then
 		return
@@ -85,7 +88,7 @@ end
 
 function Building:AddUnitToQueue(UnitName)
 	local UnitQueued = EntityModule.EntitiesDirectory[UnitName]
-	if EntityModule.EntitiesDirectory[UnitName] == nil then
+	if EntityModule.EntitiesDirectory[UnitName] == nil then --WHY
 		warn("Entity doesn't exists!")
 		return
 	end
@@ -104,6 +107,11 @@ end
 
 function Building:SetUnitWaypoint(position:Vector3)
 	self.UnitWaypoint = position
+	return self
+end
+
+function Building:ResetUnitWaypoint()
+	self.UnitWaypoint = self.Object.PrimaryPart.Position + Vector3.new(0,0, -self.Object.PrimaryPart.Size.Z)
 	return self
 end
 
