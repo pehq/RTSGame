@@ -1,14 +1,36 @@
 --Code from Roblox docs: https://create.roblox.com/docs/workspace/collisions#disabling-character-collisions
 local Players = game:GetService("Players")
 local PhysicsService = game:GetService("PhysicsService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-PhysicsService:RegisterCollisionGroup("Entity")
-PhysicsService:RegisterCollisionGroup("Characters")
-PhysicsService:CollisionGroupSetCollidable("Characters", "Characters", false)
-PhysicsService:CollisionGroupSetCollidable("Entity", "Characters", false)
+local CollisionStrings = {
+	"Characters",
+	"Entity",
+	"Unit",
+	"Building",
+	"InactiveUnit",
+}
+
+for i = 1, #CollisionStrings do
+	PhysicsService:RegisterCollisionGroup(CollisionStrings[i])
+end
+
+for i = 1, #CollisionStrings do
+	local value = CollisionStrings[i]
+	
+	PhysicsService:CollisionGroupSetCollidable(value, "Characters", false)
+	if value == "Characters" then
+		continue
+	end
+	
+	PhysicsService:CollisionGroupSetCollidable(value, "Entity", true)
+end
+
+PhysicsService:CollisionGroupSetCollidable("InactiveUnit", "Unit", false)
+
 
 local function onDescendantAdded(descendant)
-	-- Set collision group for any part descendant
+	--Set collision group for any part descendant
 	if descendant:IsA("BasePart") then
 		descendant.CollisionGroup = "Characters"
 	end
@@ -26,3 +48,9 @@ Players.PlayerAdded:Connect(function(player)
 	-- Detect when the player's character is added
 	player.CharacterAdded:Connect(onCharacterAdded)
 end)
+
+for i, v in pairs(ReplicatedStorage.Models:GetDescendants()) do
+	if v:IsA("BasePart") then
+		v.CollisionGroup = "Entity"
+	end
+end
