@@ -15,6 +15,12 @@ function Building.new(values, owner)
 	local self = EntityModule.new(values, owner)
 	setmetatable(self, Building)
 	
+	for i, v in pairs(self.Object:GetDescendants()) do
+		if v:IsA("BasePart") then
+			v.CollisionGroup = "Building"
+		end
+	end
+
 	self.BuildingState = "Idle"
 	self.ActionState = "Idle"
 	self.Queue = {}
@@ -34,10 +40,9 @@ function Building:SpawnUnit(UnitDataName)
 	local SpawningEdgeOffset = Vector2.new(0.5 * (2 + Rot2d.X^2 - Rot2d.Y^2 + 2 * Rot2d.X * 2^0.5)^0.5 - 0.5 * (2 + Rot2d.X^2 - Rot2d.Y^2 - 2* Rot2d.X * 2^0.5)^0.5, 0.5 * (2 - Rot2d.X^2 + Rot2d.Y^2 + 2 * Rot2d.Y * 2^0.5)^0.5 - 0.5 * (2 - Rot2d.X^2 + Rot2d.Y^2 - 2 * Rot2d.Y * 2^0.5)^0.5)
 	local SpawningEdge = Hitbox.Position + Vector3.new(SpawningEdgeOffset.X * Hitbox.Size.X/2, Hitbox.Position.Y, SpawningEdgeOffset.Y * Hitbox.Size.Z)
 	
-	--Orientation
-	local SpawnCFrame = CFrame.lookAt(SpawningEdge, Vector3.new(self.UnitWaypoint.X, SpawningEdge.Y, self.UnitWaypoint.Z))
+	--TODO: add orientation
 	
-	ServerEvents.SpawnUnit:Fire(self.EntityId, self.Owner, UnitDataName, SpawnCFrame, self.UnitWaypoint)
+	ServerEvents.SpawnUnit:Fire(self.EntityId, self.Owner, UnitDataName, SpawningEdge)
 	
 	return self
 end
@@ -55,7 +60,7 @@ function Building:BuildFromQueue() --I am considering turning this into a local 
 	local StartTime = os.time()
 	
 	repeat
-		self.BuildProgress = os.time() - StartTime
+		self.BuildProgress = (os.time() - StartTime) / SelectedQueue.BuildTime
 		task.wait()
 	until Cancelled == true or os.time() - StartTime >= SelectedQueue.BuildTime
 	
@@ -86,19 +91,18 @@ function Building:RemoveFromQueue(index)
 	return self
 end
 
-function Building:AddUnitToQueue(UnitName)
-	local UnitQueued = EntityModule.EntitiesDirectory[UnitName]
-	if EntityModule.EntitiesDirectory[UnitName] == nil then --WHY
+function Building:AddUnitToQueue(UnitName, BuildTime)
+	if ReplicatedStorage.EntityData:FindFirstChild(UnitName) == nil then --WHY
 		warn("Entity doesn't exists!")
 		return
 	end
 	
 	table.insert(self.Queue, {
-		["BuildTime"] = UnitQueued.Values.BuildTime,
 		["Name"] = UnitName,
+		["BuildTime"] = BuildTime,
 	})
 	
-	if self.BuildingState ~= "Building" then	
+	if self.BuildingState ~= "Building" then
 		self:BuildFromQueue()
 	end
 	
