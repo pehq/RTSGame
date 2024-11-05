@@ -43,6 +43,7 @@ table.move(EntitiesCreatedFromPreset, 1, #EntitiesCreatedFromPreset, 1, EntityLi
 
 local function GetEntityFromInstance(obj:Instance)
 	local Entity = nil
+	print(obj)
 	if obj:IsA("Model") == false then
 		return Entity
 	end
@@ -96,18 +97,21 @@ RemoteEvents.MoveEntity.OnServerEvent:Connect(function(plr, TarPos, EntityId)
 end)
 
 	--Building Events
-RemoteEvents.BuildUnit.OnServerEvent:Connect(function(plr, BuildingEntityId, UnitDataName)
+RemoteEvents.BuildUnit.OnServerEvent:Connect(function(plr, BuildingEntityId, UnitDataName, BuildTime)
 	if EntityDataList[UnitDataName] == nil then
 		error("Unit's data not found, consider having the Unit's data's value the same as the name of the module.")
 	end
 	
-	BuildingModule:AddUnitToQueue()
+	local BuildingEntity = GetEntityFromId(BuildingEntityId)
+	BuildingEntity:AddUnitToQueue(UnitDataName, BuildTime)
 end)
 
-ServerEvents.SpawnUnit.Event:Connect(function(BuildingId:number, UnitDataName:string, SpawnEdge:CFrame)
+ServerEvents.SpawnUnit.Event:Connect(function(BuildingId:number, Owner, UnitDataName:string, SpawnEdge:Vector3)
 	local Building = GetEntityFromId(BuildingId)
-	local NewUnit = UnitModule.new(EntityDataList[UnitDataName], Building.Owner)
-	NewUnit.Object.PrimaryPart.CFrame = SpawnEdge
+	print(UnitDataName, EntityDataList[UnitDataName])
+	local NewUnit = UnitModule.new(EntityDataList[UnitDataName].Values, Building.Owner)
+	NewUnit.Object.PrimaryPart.Position = SpawnEdge
+	table.insert(EntityList, NewUnit)
 	NewUnit.Object.Parent = workspace:FindFirstChild(Building.Owner.UserId)
 	NewUnit:WalkTo(Building.UnitWaypoint)
 end)
