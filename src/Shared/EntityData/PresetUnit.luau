@@ -33,6 +33,16 @@ PresetUnit.Values = {
 	["Health"] = 100,
 	["MaxShield"] = 500,
 	["Shield"] = 500,
+	["CanBuild"] = true,
+	["BuildRange"] = 5, --studs
+	["BuildSlots"] = {
+		[1] = {
+			["EntityDataName"] = "ExampleBuilding",
+			["Object"] = ReplicatedStorage.Models.ExampleBuilding,
+			["Icon"] = "rbxassetid://00000000",
+			["BuildTime"] = 5,
+		}
+	}
 }
 
 return PresetUnit
