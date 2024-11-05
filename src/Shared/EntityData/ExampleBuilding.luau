@@ -16,9 +16,9 @@ Data.Values = {
 	["BuildSlots"] = {
 		{ --Slot 1
 			["DataName"] = "PresetUnit", --Name of unit's module
-			["Icon"] = nil, --rbxassetid://###########, if you don't have image then put it as nil or false
+			["Icon"] = "rbxasset://5004731269", --rbxassetid://###########, if you don't have image then put it as nil or false
 			["Object"] = ReplicatedStorage.Models.PresetUnit,
-			["BuildTime"] = 10,
+			["BuildTime"] = 0,
 			["UpgradesRequired"] = nil, --TODO: Add upgrades.
 		},
 	},
