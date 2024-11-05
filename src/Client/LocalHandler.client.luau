@@ -21,11 +21,13 @@ end)
 
 Mouse.Button1Up:Connect(function()
 	local ObjPointed = Mouse.Target
+	print(ObjPointed)
 	if ObjPointed == nil then
 		return
 	end
 	
 	local Entity = Functions.GetEntityFromInstance:InvokeServer(ObjPointed.Parent)
+	print(Entity)
 	Selected = Entity
 	
 	if Entity == nil then
@@ -40,6 +42,7 @@ Mouse.Button1Up:Connect(function()
 		local x = Instance.new("Part")
 		x.Position = Entity.UnitWaypoint
 		x.Size = Vector3.one
+		x.CanCollide = false
 		x.Anchored = true
 		x.Parent = workspace
 	end
@@ -52,7 +55,7 @@ end)
 
 Mouse.Button2Up:Connect(function()
 	local TargetPos = Mouse.Hit.Position
-	if Selected == nil or Selected.EntityId == nil then
+	if Selected == nil or Selected.EntityId == nil or Selected.EntityType ~= "Unit" then
 		return
 	end
 	Events.MoveEntity:FireServer(TargetPos, Selected.EntityId)
