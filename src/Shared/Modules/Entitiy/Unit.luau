@@ -1,7 +1,9 @@
+local ServerStorage = game:GetService("ServerStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local PathfindingService = game:GetService("PathfindingService")
 local RunService = game:GetService("RunService")
 
+local ServerEvents = ServerStorage.Events
 local Modules = ReplicatedStorage.Modules
 
 local EntityModule = require(script.Parent)
@@ -14,15 +16,37 @@ function Unit.new(Values, owner)
 	local self = EntityModule.new(Values, owner)
 	setmetatable(self, Unit)
 	
+	--Humanoid
 	local Humanoid:Humanoid = self.Object:FindFirstChildWhichIsA("Humanoid")
 	Humanoid.WalkSpeed = Values.Speed
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp, true)
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming, false)
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Freefall, true)
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Flying, false) --wth???
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Landed, true)
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Running, true)
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Climbing, false)
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.PlatformStanding, true)
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Dead, true) --TODO: deaths will be handled manually, for now it is true
 	
-	self.WalkSpeed = 1
+	--Collisions
+	for i, v in pairs(self.Object:GetDescendants()) do
+		if v:IsA("BasePart") then
+			v.CollisionGroup = "Unit"
+		end
+	end
+	
+	self.WalkSpeed = Values.Speed
 	self.State = "Idle"
 	self.Radius = 16
-	self.TurretDefaultMotorC0 = {
-		--Value = {motor6ds}, any duplicate values will be stored as one entry rather than each object having its own value
-	}
+	self.TurretDefaultMotorC0 = {} --Value = {motor6ds}, any duplicate values will be stored as one entry rather than each object having its own value
+	
+	if self.CanBuild == true then
+		self.BuildProgressTime = 0
+	end
 	
 	return self
 end
@@ -256,6 +280,78 @@ function Unit:ResetTurretsAim()
 		for j = 1, #v do
 			v[j].C0 = i
 		end
+	end
+	
+	return self
+end
+
+function Unit:BuildBuilding(BuildingDataName, BuildCFrame:CFrame)
+	local Model:Model = self.Object
+	--Look for slot in entity
+	local Slot = nil
+	for i, v in pairs(self.BuildSlots) do
+		if v.DataName == BuildingDataName then
+			Slot = v
+			break
+		end
+	end
+	
+	if not self.CanBuild or (BuildCFrame.Position - Model.PrimaryPart.Position).Magnitude > self.BuildRange or Slot == nil then
+		return self
+	end
+	
+	self.State = "Building"
+	local StartTime = os.time()
+	
+	repeat
+		self.BuildProgressTime = os.time() - StartTime
+		task.wait()
+	until self.State ~= "Building" or os.time() - StartTime >= Slot.BuildTime
+	
+	if self.State == "Building" then --success
+		ServerEvents.SpawnUnit:Fire(BuildingDataName, BuildCFrame)
+		self.State = "Idle"
+	end
+	
+	return self
+end
+
+function Unit:ProgressSpawnBuildBuilding(BuildingDataName, BuildCFrame:CFrame, Percentage) --This spawns an unfinished building with a progress percentage, it'll be built up.
+	if not Percentage then
+		Percentage = 0
+	else
+		Percentage = math.clamp(Percentage, 0, 1)
+	end
+	
+	local Model:Model = self.Object
+	
+	local Slot = nil
+	for i, v in pairs(self.BuildSlots) do
+		if v.DataName == BuildingDataName then
+			Slot = v
+			break
+		end
+	end
+	
+	if not self.CanBuild or (BuildCFrame.Position - Model.PrimaryPart.Position).Magnitude > self.BuildRange or Slot == nil then
+		return self
+	end
+	
+	self.State = "Building"
+	local TimeOffset = self.BuildTime * Percentage
+	local StartTime = os.time()
+	
+	--TODO: Spawn the RootPart of the building at BuildCFrame and make it look like it's being built up. If there is already a percentage done then have that percentage done.
+	
+	repeat
+		Percentage = (os.time() - StartTime + TimeOffset) / Slot.BuildTime
+		self.BuildProgressTime = Percentage
+		task.wait()
+	until self.State ~= "Building" or os.time() - StartTime >= Slot.BuildTime - TimeOffset
+	
+	if self.State == "Building" then --success
+		ServerEvents.SpawnUnit:Fire(BuildingDataName, BuildCFrame) --TODO: Replace building with a finished version
+		self.State = "Idle"
 	end
 	
 	return self
