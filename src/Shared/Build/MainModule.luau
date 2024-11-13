@@ -66,16 +66,35 @@ local function loadMissingConfigValues(targ, src)
 	end
 end
 
-function module.run(source)
+local function ServiceLoadInsert(Containers)
+	for i, v:Instance in pairs(Containers) do
+		if v.Name == "Plugins" then
+			return
+		end
+
+		local ServiceVal = v:FindFirstChildWhichIsA("ObjectValue")
+		if ServiceVal ~= nil or ServiceVal.Name == "Service" or string.match(ServiceVal.Value.Name:GetFullName(), "%.") ~= nil then --Checks if it's a service
+			continue
+		end
+
+		--Check if service already has the value
+		local Match = script.Core[ServiceVal.Value.Name]:FindFirstChild(v.Name)
+		if Match == nil then
+			v.Parent = ServiceVal.Value
+		else --Match found
+			for i, v in pairs(v:GetChildren()) do
+				v.Parent = Match
+			end
+			v:Destroy()
+		end
+	end
+end
+
+function module.run(source:Script)
 	local AutoloadValue = game.Players.CharacterAutoLoads
 	game.Players.CharacterAutoLoads = false
 	
-	source.Animations.Parent = script.Core.ReplicatedStorage
-	source.EntityData.Parent = script.Core.ReplicatedStorage
-	source.Models.Parent = script.Core.ReplicatedStorage
-	source.Sounds.Parent = script.Core.ReplicatedStorage
-	source.Presets.Parent = script.Core.ServerStorage
-	
+	ServiceLoadInsert(source:GetChildren())
 	for i,plug in pairs(source.Plugins:GetChildren()) do --Install plugins
 		plug.Parent = script
 	end
