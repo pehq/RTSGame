@@ -1,4 +1,0 @@
-# RTSGame Changelog
-
-## Unreleased Changes
-* 
