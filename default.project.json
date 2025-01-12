@@ -1,30 +1,23 @@
 {
-  "name": "project",
+  "name": "RTSGame",
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
-      "$className": "ReplicatedStorage",
-      "$ignoreUnknownInstances": true,
-      "$path": "src/ReplicatedStorage"
+      "$path": "src/Shared"
     },
     "ServerScriptService": {
-      "$className": "ServerScriptService",
-      "$ignoreUnknownInstances": true,
-      "$path": "src/ServerScriptService"
-    },
-    "StarterGui": {
-      "$className": "StarterGui",
-      "$ignoreUnknownInstances": true,
-      "$path": "src/StarterGui"
+      "$path": "src/Server",
+      "RTSGame": {
+        "$className": "Folder",
+        "node_modules": {
+          "$path": "node_modules"
+        }
+      }
     },
     "StarterPlayer": {
-      "$className": "StarterPlayer",
       "StarterPlayerScripts": {
-        "$className": "StarterPlayerScripts",
-        "$ignoreUnknownInstances": true,
-        "$path": "src/StarterPlayer/StarterPlayerScripts"
-      },
-      "$ignoreUnknownInstances": true
+        "$path": "src/Client"
+      }
     }
   }
 }
