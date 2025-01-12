@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@quenty/elo": "^7.16.0",
+    "@quenty/maid": "^3.4.0"
+  }
+}
