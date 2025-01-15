@@ -1,7 +1,12 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
 local EntityData = ReplicatedStorage.EntityData
+
+local ServerConfigs = ServerStorage:FindFirstChildWhichIsA("Configuration")
+
+local EntityDataIdsContainer = ServerConfigs.EntityDataIds
 
 local ObjValModule = require(ReplicatedStorage.Modules.ObjectValues)
 
@@ -23,9 +28,18 @@ end
 function Entity.new(Values, owner)
 	local self = {}
 	setmetatable(self, Entity)
-		
-	self.Id = shared.Strategis.EntityIdCount
-	shared.Strategis.EntityIdCount += 1
+	
+	local EntityDataId = EntityDataIdsContainer:FindFirstChild(Values.DataName)
+	if not EntityDataId then
+		EntityDataId = Instance.new("IntValue")
+		EntityDataId.Name = Values.DataName
+		EntityDataId.Value = 0
+		EntityDataId.Parent = EntityDataIdsContainer
+	end
+	self.Id = EntityDataId.Value
+	EntityDataId.Value += 1
+	--self.Id = shared.Strategis.EntityIdCount
+	--shared.Strategis.EntityIdCount += 1
 	
 	self.Owner = owner
 	self.Team = self.Owner ~= nil and self.Owner.Team or nil

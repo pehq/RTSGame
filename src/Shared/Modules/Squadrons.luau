@@ -1,4 +1,4 @@
---Squadrons are a collection of the same units
+--Squadrons are a collection of the same units WIP
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 

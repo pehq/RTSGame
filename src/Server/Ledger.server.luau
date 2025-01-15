@@ -12,25 +12,36 @@ local PhysicsService = game:GetService("PhysicsService")
 local RemoteEvents = ReplicatedStorage.Events
 local RemoteFunctions = ReplicatedStorage.Functions
 local ServerEvents = ServerStorage.Events
+local ServerConfigs = ServerStorage:FindFirstChildWhichIsA("Configuration")
 
 local EntityModule =  require(ReplicatedStorage.Modules.Entitiy)
 local UnitModule =  require(ReplicatedStorage.Modules.Entitiy.Unit)
 local BuildingModule =  require(ReplicatedStorage.Modules.Entitiy.Building)
 local PresetModule = require(ReplicatedStorage.Modules.StartingPresets)
 
+local EntityDataArray = ReplicatedStorage.EntityData:GetChildren()
 local EntityDataList = {}
-for i, v in pairs(ReplicatedStorage.EntityData:GetChildren()) do
+for i, v in pairs(EntityDataArray) do
 	if v:IsA("ModuleScript") ~= true then
 		continue
 	end
 	EntityDataList[v.Name] = require(v)
 end
+print(EntityDataList)
 
 local EntityList = {}
 
+local MIN_PLAYERS = 1
+
 --Start up
+local plrCount = #Players:GetPlayers()
+repeat
+	Players.PlayerAdded:Wait()
+	plrCount = #Players:GetPlayers()
+until plrCount >= MIN_PLAYERS
+
+task.wait(10)
 print("Started")
-task.wait(3)
 for i, v in pairs(Players:GetPlayers()) do
 	local Folder = Instance.new("Folder")
 	Folder.Name = v.UserId

@@ -13,8 +13,7 @@ local Presets = {}
 --This is how a preset is gonna be
 --Team Colour
 --|-Team1
---| \-EntityName
---|   \-CFrameValue
+--| \-EntityName (CFrameValue)
 --\-Team2
 --Any team in a preset witht the same name will be merged
 --Any player controlling two teams will have the teams be merged
@@ -41,29 +40,8 @@ function Presets.FormatCFrameValues(PresetInstances:Instance):{[string]:{[string
 			continue
 		end
 	end
-	--Look over modifiers
-	for i, v in pairs(Result) do
-		if PresetInstances:FindFirstChild(i) then
-			if PresetInstances[i]:FindFirstChild("isTeam") and PresetInstances[i].Value == true then
-				Result[i] = nil
-				continue
-			end
-		end
-	end
 	
-	--Prioritizes teams
-	local TeamPriority = {}
-	local PrioritizedTeams = 0
-	for i, v in pairs(Result) do
-		if PresetInstances:FindFirstChild("Priority") then
-			TeamPriority[PresetInstances.Priority.Value] = i
-		else
-			TeamPriority[#Result - PrioritizedTeams] = i
-			PrioritizedTeams += 1
-		end
-	end
-	
-	return Result, TeamPriority
+	return Result
 end
 
 function Presets.AssignPlayersToTeams(preset:Instance)
