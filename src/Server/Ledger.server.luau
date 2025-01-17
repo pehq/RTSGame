@@ -14,10 +14,11 @@ local RemoteFunctions = ReplicatedStorage.Functions
 local ServerEvents = ServerStorage.Events
 local ServerConfigs = ServerStorage:FindFirstChildWhichIsA("Configuration")
 
-local EntityModule =  require(ReplicatedStorage.Modules.Entitiy)
-local UnitModule =  require(ReplicatedStorage.Modules.Entitiy.Unit)
-local BuildingModule =  require(ReplicatedStorage.Modules.Entitiy.Building)
-local PresetModule = require(ReplicatedStorage.Modules.StartingPresets)
+local EntityModule 	= require(ReplicatedStorage.Modules.Entitiy)
+local UnitModule 	= require(ReplicatedStorage.Modules.Entitiy.Unit)
+local BuildingModule= require(ReplicatedStorage.Modules.Entitiy.Building)
+local PresetModule 	= require(ReplicatedStorage.Modules.StartingPresets)
+local PseudoTables 	= require(ReplicatedStorage.Modules["Pseudo-Dimensional Table"])
 
 local EntityDataArray = ReplicatedStorage.EntityData:GetChildren()
 local EntityDataList = {}
@@ -42,7 +43,8 @@ until plrCount >= MIN_PLAYERS
 
 task.wait(10)
 print("Started")
-for i, v in pairs(Players:GetPlayers()) do
+local PlayingPlrs = Players:GetPlayers()
+for i, v in pairs(PlayingPlrs) do
 	local Folder = Instance.new("Folder")
 	Folder.Name = v.UserId
 	Folder.Parent = workspace
