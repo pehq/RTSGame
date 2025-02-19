@@ -13,9 +13,11 @@ local Unit = {}
 Unit.__index = Unit
 setmetatable(Unit, EntityModule)
 
-function Unit.new(Values, owner)
-	local self = EntityModule.new(Values, owner)
+function Unit.new(EntityDataName:string, owner:Player, id:number)
+	local self = EntityModule.new(EntityDataName, owner, id)
 	setmetatable(self, Unit)
+	
+	local Values = EntityModule.EntitiesDirectory[EntityDataName].Values
 	
 	--Humanoid
 	local Humanoid:Humanoid = self.Object:FindFirstChildWhichIsA("Humanoid")

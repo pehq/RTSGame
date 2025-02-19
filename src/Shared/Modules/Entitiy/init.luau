@@ -1,12 +1,13 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local RunService = game:GetService("RunService")
+local CollectionService = game:GetService("CollectionService")
 local HttpService = game:GetService("HttpService")
-local EntityData = ReplicatedStorage.EntityData
 
+local EntityData = ReplicatedStorage.EntityData
 local ServerConfigs = ServerStorage:FindFirstChildWhichIsA("Configuration")
 
-local EntityDataIdsContainer = ServerConfigs.EntityDataIds
+local EntityIntId = ServerConfigs.EntityIdValue
 
 local ObjValModule = require(ReplicatedStorage.Modules.ObjectValues)
 
@@ -15,40 +16,30 @@ Entity.__index = Entity
 
 Entity.EntitiesDirectory = {}
 for i, v in pairs(EntityData:GetChildren()) do
-	local Required
-	
 	if v:IsA("ModuleScript") then
-		Required = require(v)
-		Entity.EntitiesDirectory[Required.Values.Name] = Required
+		Entity.EntitiesDirectory[v.Name] = require(v)
 	end
-	
-	Required = nil
 end
 
-function Entity.new(Values, owner)
+function Entity.new(EntityData:string, owner, id)
 	local self = {}
 	setmetatable(self, Entity)
 	
-	local EntityDataId = EntityDataIdsContainer:FindFirstChild(Values.DataName)
-	if not EntityDataId then
-		EntityDataId = Instance.new("IntValue")
-		EntityDataId.Name = Values.DataName
-		EntityDataId.Value = 0
-		EntityDataId.Parent = EntityDataIdsContainer
-	end
-	self.Id = EntityDataId.Value
-	EntityDataId.Value += 1
-	--self.Id = shared.Strategis.EntityIdCount
-	--shared.Strategis.EntityIdCount += 1
+	local Values = Entity.EntitiesDirectory[EntityData].Values
+	
+	self.Id = EntityIntId.Value
+	EntityIntId.Value += 1
 	
 	self.Owner = owner
 	self.Team = self.Owner ~= nil and self.Owner.Team or nil
 	self.Object = Values.Object:Clone()
 	self.Object.Parent = workspace
 	Entity.ApplyCollisionsOnObj(self.Object)
+	CollectionService:AddTag(self.Object, Values.DataName)
 	
 	self.EntityType = Values.EntityType
 	self.DataName = Values.DataName
+	self.Name = Values.Name
 	
 	self.Health = Values.Health
 	self.MaxHealth = Values.MaxHealth
@@ -61,6 +52,7 @@ function Entity.new(Values, owner)
 	self:NewConfig("Owner",		Instance.new("ObjectValue"))
 	self:NewConfig("Id",		Instance.new("IntValue"))
 	self:NewConfig("DataName",	Instance.new("StringValue"))
+	self:NewConfig("Name",		Instance.new("StringValue"))
 	self:NewConfig("Health",	Instance.new("NumberValue"))
 	self:NewConfig("MaxHealth",	Instance.new("NumberValue"))
 	self:NewConfig("Shield",	Instance.new("NumberValue"))

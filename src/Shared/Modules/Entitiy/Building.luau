@@ -12,8 +12,8 @@ local Building = {}
 Building.__index = Building
 setmetatable(Building, EntityModule)
 
-function Building.new(values, owner)
-	local self = EntityModule.new(values, owner)
+function Building.new(EntityDataName, owner, id)
+	local self = EntityModule.new(EntityDataName, owner, id)
 	setmetatable(self, Building)
 	
 	for i, v in pairs(self.Object:GetDescendants()) do
