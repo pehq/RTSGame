@@ -1,4 +1,5 @@
 --TODO: script needs to be rehauled, consider using ContextActionService. -Pehq
+--TODO: This script will be scrapped in favour of controlling units trough the gui. -Pehq
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
@@ -15,14 +16,6 @@ local PlayerEntityContainers = workspace:WaitForChild(tostring(Player.UserId), 6
 local SelectionUi = PlayerGui:WaitForChild("Selection", 60)
 
 local SelectedIds = {}
-
---Attachment thing
-local TarAttachment = Instance.new("Attachment")
-TarAttachment.Name = "UnitTargetBeam"
-TarAttachment.Parent = workspace.Terrain
-local TarAttachBeam = Instance.new("Beam")
-TarAttachBeam.Name = "UnitTargetBeam"
-TarAttachBeam.Attachment1 = TarAttachment
 
 local function CreateUnitBeam(EntityModel:Model)
 	if EntityModel:FindFirstChildWhichIsA("Humanoid") == false or EntityModel.PrimaryPart.AssemblyLinearVelocity == Vector3.zero then
@@ -130,7 +123,6 @@ local function SelectAction(ActionName:string, InputState:Enum.UserInputState, I
 				end
 			end
 
-			print(Selecting)
 		else
 			local SelectedEntityModel:Model = RaycastForEntities(MousePos)
 			if SelectedEntityModel ~= nil then
